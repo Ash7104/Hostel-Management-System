@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Room{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2>Add New Room</h2>
+    
+    <form action="{{ url_for('add_room') }}" method="POST">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="room_number" class="form-label">Room Number</label>
+                <input type="text" class="form-control" id="room_number" name="room_number" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="capacity" class="form-label">Capacity</label>
+                <input type="number" class="form-control" id="capacity" name="capacity" min="1" required>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="hostel_block" class="form-label">Hostel Block</label>
+                <input type="text" class="form-control" id="hostel_block" name="hostel_block" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Gender</label>
+                <div class="d-flex">
+                    <div class="form-check me-4">
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
+                        <label class="form-check-label" for="male">Male</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                        <label class="form-check-label" for="female">Female</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Add Room</button>
+            <a href="{{ url_for('add_block') }}" class="btn btn-secondary">Add Blocks</a>
+            <a href="{{ url_for('admin_rooms') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

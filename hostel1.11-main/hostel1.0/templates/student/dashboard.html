@@ -1,0 +1,200 @@
+<!-- templates/student/dashboard.html -->
+{% extends "layout.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block head %}
+<style>
+    .circular-chart {
+        display: block;
+        margin: 0 auto;
+        max-width: 80%;
+        max-height: 100%;
+    }
+    .circle-bg {
+        fill: none;
+        stroke: #eee;
+        stroke-width: 3.8;
+    }
+    .circle {
+        fill: none;
+        stroke-width: 3.8;
+        stroke-linecap: round;
+    }
+    .percentage {
+        fill: #666;
+        font-family: sans-serif;
+        font-size: 0.5em;
+        text-anchor: middle;
+    }
+
+    .mb-4{
+        margin-left: 15px;
+    }
+
+    .card-body{
+        margin-left: 15px;
+    }
+   
+
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Student Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Personal Information</h6>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{ student.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ student.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Phone:</th>
+                        <td>{{ student.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Course:</th>
+                        <td>{{ student.course }}</td>
+                    </tr>
+                    <tr>
+                        <th>Year:</th>
+                        <td>{{ student.year }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Room Information</h6>
+            </div>
+            <div class="card-body">
+                {% if student.room_id %}
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle me-2"></i> Room Allocated</h5>
+                        <p class="mb-0">Room Number: <strong>{{ student.room.room_number }}</strong></p>
+                        <p class="mb-0">Hostel Block: <strong>{{ student.room.hostel_block }}</strong></p>
+                    </div>
+                    <a href="#" class="btn btn-primary mt-2">View Room Details</a>
+                {% elif application and application.status == 'pending' %}
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-clock me-2" style="margin-left: 15px;"></i> Application Pending</h5>
+                        <p class="mb-0">Your application for a room in <strong>{{ application.preferred_block }}</strong> block is under review.</p>
+                        <p class="mb-0">Applied on: <strong>{{ application.application_date.strftime('%d-%m-%Y') }}</strong></p>
+                    </div>
+                {% elif application and application.status == 'rejected' %}
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-times-circle me-2"></i> Application Rejected</h5>
+                        <p class="mb-0">Your application for a room in <strong>{{ application.preferred_block }}</strong> block was rejected.</p>
+                        <p class="mb-0">You can apply again for a different block.</p>
+                    </div>
+                    <a href="{{ url_for('student_apply') }}" class="btn btn-primary mt-2">Apply Again</a>
+                {% else %}
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle me-2"></i> No Room Allocated</h5>
+                        <p class="mb-0">You haven't applied for a hostel room yet.</p>
+                    </div>
+                    <a href="{{ url_for('student_apply') }}" class="btn btn-primary mt-2">Apply for Room</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Fee Status</h6>
+            </div>
+            <div class="card-body">
+                {% if fees %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Semester</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fee in fees %}
+                                <tr>
+                                    <td>{{ fee.semester }}</td>
+                                    <td>${{ fee.amount }}</td>
+                                    <td>
+                                        {% if fee.status == 'paid' %}
+                                            <span class="badge bg-success">Paid</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Unpaid</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if fee.status == 'unpaid' %}
+                                            <a href="{{ url_for('pay_fee', fee_id=fee.id) }}" class="btn btn-sm btn-primary">Pay Now</a>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-secondary" disabled>Paid</button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info">No fee records found.</div>
+                {% endif %}
+                <a href="{{ url_for('student_fees') }}" class="btn btn-primary mt-2">View All Fees</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Attendance Overview</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div style="width: 120px; height: 120px;" class="me-3">
+                        <div class="position-relative">
+                            <div class="progress-circle" style="width: 120px; height: 120px;">
+                                <svg viewBox="0 0 36 36" class="circular-chart">
+                                    <path class="circle-bg" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#eee" stroke-width="3"/>
+                                    <path class="circle" stroke-dasharray="{{ attendance_percentage }}, 100" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#4e73df" stroke-width="3"/>
+                                    <text x="18" y="20.35" class="percentage">{{ attendance_percentage|round(1) }}%</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Attendance Rate</h4>
+                        <p class="mb-0">Your current attendance rate is <strong>{{ attendance_percentage|round(1) }}%</strong></p>
+                        {% if attendance_percentage < 75 %}
+                            <div class="alert alert-danger mt-2 mb-0 py-1">Your attendance is below 75% requirement!</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <a href="{{ url_for('student_attendance') }}" class="btn btn-primary mt-3">View Detailed Attendance</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

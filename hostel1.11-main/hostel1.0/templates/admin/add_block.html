@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Room{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Hostel Block</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Add New Hostel Block</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('add_block') }}" method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="block_name" class="form-label">Block Name</label>
+                    <input type="text" class="form-control" id="block_name" name="block_name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Gender</label>
+                    <div class="d-flex">
+                        <div class="form-check me-4">
+                            <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
+                            <label class="form-check-label" for="male">Male</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                            <label class="form-check-label" for="female">Female</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="room_prefix" class="form-label">Room Number Prefix</label>
+                    <input type="text" class="form-control" id="room_prefix" name="room_prefix" placeholder="e.g. B1-" required>
+                    <small class="text-muted">Will be used as prefix for room numbers (e.g. B1-001, B1-002)</small>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="num_rooms" class="form-label">Number of Rooms</label>
+                    <input type="number" class="form-control" id="num_rooms" name="num_rooms" min="1" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="capacity_per_room" class="form-label">Capacity Per Room</label>
+                    <input type="number" class="form-control" id="capacity_per_room" name="capacity_per_room" min="1" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create Block</button>
+                <a href="{{ url_for('admin_blocks') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}

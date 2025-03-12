@@ -1,0 +1,135 @@
+<!-- templates/student/attendance.html -->
+{% extends "layout.html" %}
+
+{% block title %}My Attendance{% endblock %}
+
+{% block content %}
+<style>
+
+.mb-4{
+        margin-left: 15px;
+    }
+
+    .percentage {
+        fill: #666;
+        font-family: sans-serif;
+        font-size: 0.5em;
+        text-anchor: middle;
+    }
+
+</style>
+
+<h2 class="mb-4">My Attendance</h2>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Attendance Summary</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div style="width: 150px; height: 150px;" class="me-3">
+                        <div class="position-relative">
+                            <div class="progress-circle" style="width: 150px; height: 150px;">
+                                <svg viewBox="0 0 36 36" class="circular-chart">
+                                    <path class="circle-bg" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#eee" stroke-width="3"/>
+                                    <path class="circle" stroke-dasharray="{{ percentage }}, 100" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="{{ 'green' if percentage >= 75 else 'orange' if percentage >= 65 else 'red' }}" stroke-width="3"/>
+                                    <text x="18" y="20.35" class="percentage">{{ percentage|round(1) }}%</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Overall Attendance</h4>
+                        <p>Your current attendance rate is <strong>{{ percentage|round(1) }}%</strong></p>
+                        
+                        {% if percentage >= 75 %}
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i> Your attendance is satisfactory.
+                            </div>
+                        {% elif percentage >= 65 %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i> Your attendance is below the recommended 75%.
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger">
+                                <i class="fas fa-times-circle me-2"></i> Your attendance is critically low. Please improve your attendance.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Attendance Details</h6>
+        <div>
+            <select class="form-select form-select-sm" id="monthFilter">
+                <option value="">All Months</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if attendance %}
+            <div class="table-responsive">
+                <table class="table table-bordered" id="attendanceTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance %}
+                        <tr>
+                            <td>{{ record.date.strftime('%d-%m-%Y') }}</td>
+                            <td>
+                                {% if record.status == 'present' %}
+                                    <span class="badge bg-success">Present</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Absent</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">No attendance records found.</div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.getElementById("monthFilter").addEventListener("change", function() {
+        var selectedMonth = this.value;
+        var rows = document.querySelectorAll("#attendanceTable tbody tr");
+        rows.forEach(row => {
+            var dateCell = row.cells[0].textContent;
+            var month = dateCell.split("-")[1];
+            row.style.display = (selectedMonth === "" || month === selectedMonth) ? "" : "none";
+        });
+    });
+</script>
+{% endblock %}

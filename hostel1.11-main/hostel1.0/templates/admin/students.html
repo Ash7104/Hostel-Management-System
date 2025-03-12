@@ -1,0 +1,65 @@
+<!-- templates/admin/students_fees.html -->
+{% extends "layout.html" %}
+
+{% block title %}Students & Fee Details{% endblock %}
+
+{% block content %}
+<style>
+
+    .card{
+        margin-left: 15px;
+    }
+    
+    h2.mb-4{
+        padding-left: 20px;
+    }
+    </style>
+
+
+
+
+<h2 class="mb-4">Students & Fee Details</h2>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">All Students</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Course</th>
+                        <th>Year</th>
+                        <th>Room Number</th>
+                        <th>Fee Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.email }}</td>
+                        <td>{{ student.phone }}</td>
+                        <td>{{ student.course }}</td>
+                        <td>{{ student.year }}</td>
+                        <td>{% if student.room %}{{ student.room.room_number }}{% else %}Not Assigned{% endif %}</td>
+                        <td>
+                            {% set unpaid_fees = student.fees | selectattr('status', 'equalto', 'unpaid') | list %}
+                            {% if unpaid_fees %}
+                                <span class="badge bg-danger">Pending</span>
+                            {% else %}
+                                <span class="badge bg-success">Paid</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
