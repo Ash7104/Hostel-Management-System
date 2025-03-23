@@ -1,0 +1,97 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add Canteen Menu Item</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <div class="form-group mb-3">
+                    <label for="meal_type">Meal Type</label>
+                    <select class="form-control" id="meal_type" name="meal_type" required>
+                        <option value="breakfast">Breakfast</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="dinner">Dinner</option>
+                        <option value="snacks">Snacks</option>
+                    </select>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="repeats_weekly" name="repeats_weekly">
+                        <label class="form-check-label" for="repeats_weekly">
+                            Repeats Weekly
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group mb-3" id="day_group">
+                    <label for="day">Day of Week</label>
+                    <select class="form-control" id="day" name="day">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </div>
+                
+                <div class="form-group mb-3" id="date_group">
+                    <label for="date">Date (For non-repeating items)</label>
+                    <input type="date" class="form-control" id="date" name="date">
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label for="start_time">Start Time</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time" required>
+                    <small class="form-text text-muted">Time shown in 24-hour format</small>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label for="end_time">End Time</label>
+                    <input type="time" class="form-control" id="end_time" name="end_time" required>
+                    <small class="form-text text-muted">Time shown in 24-hour format</small>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="4" required placeholder="List menu items, special dishes, etc."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Add Menu Item</button>
+                <a href="{{ url_for('admin_canteen') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle between date and day of week based on repeats_weekly checkbox
+    document.getElementById('repeats_weekly').addEventListener('change', function() {
+        const dateGroup = document.getElementById('date_group');
+        const dayGroup = document.getElementById('day_group');
+        const dateInput = document.getElementById('date');
+        
+        if (this.checked) {
+            // Weekly repeating - show day, hide date
+            dateGroup.style.display = 'none';
+            dayGroup.style.display = 'block';
+            dateInput.required = false;
+        } else {
+            // One-time - show date, hide day
+            dateGroup.style.display = 'block';
+            dayGroup.style.display = 'block';
+            dateInput.required = true;
+        }
+    });
+    
+    // Initial setup on page load
+    window.addEventListener('load', function() {
+        // Default to one-time event (date showing)
+        document.getElementById('repeats_weekly').dispatchEvent(new Event('change'));
+    });
+</script>
+{% endblock %}

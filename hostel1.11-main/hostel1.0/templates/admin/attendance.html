@@ -1,0 +1,65 @@
+<!-- templates/admin/attendance_management.html -->
+{% extends "layout.html" %}
+
+{% block title %}Manage Attendance{% endblock %}
+
+{% block content %}
+<style>
+
+    .card{
+        margin-left: 15px;
+    }
+    
+    h2.mb-4{
+        padding-left: 20px;
+    }
+    </style>
+
+
+
+
+<h2 class="mb-4">Manage Student Attendance</h2>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Mark Attendance</h6>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('mark_attendance') }}">
+            <div class="mb-3">
+                <label for="date" class="form-label">Select Date</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Course</th>
+                            <th>Year</th>
+                            <th>Attendance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.course }}</td>
+                            <td>{{ student.year }}</td>
+                            <td>
+                                <select name="student_{{ student.id }}" class="form-select">
+                                    <option value="present">Present</option>
+                                    <option value="absent">Absent</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Attendance</button>
+        </form>
+        <a href="{{ url_for('admin_attendances') }}" class="btn btn-secondary mt-3">View Attendance Records</a>
+    </div>
+</div>
+{% endblock %}

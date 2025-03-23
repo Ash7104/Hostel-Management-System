@@ -1,0 +1,58 @@
+<!-- templates/student/canteen_feedback.html -->
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Provide Feedback</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5>Menu Item Details</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Date:</strong> {{ menu_item.date.strftime('%Y-%m-%d') }}</p>
+                    <p><strong>Meal Type:</strong> {{ menu_item.meal_type.capitalize() }}</p>
+                    <p><strong>Time:</strong> {{ menu_item.start_time.strftime('%H:%M') }} - {{ menu_item.end_time.strftime('%H:%M') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Menu:</strong> {{ menu_item.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5>Your Feedback</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="rating">Rating:</label>
+                    <div class="rating-stars">
+                        {% for i in range(1, 6) %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="rating" id="rating{{ i }}" value="{{ i }}" 
+                                {% if existing_feedback and existing_feedback.rating == i %}checked{% endif %} required>
+                            <label class="form-check-label" for="rating{{ i }}">
+                                <i class="fa fa-star text-warning"></i> {{ i }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="form-group mt-3">
+                    <label for="comment">Comments:</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="3">{{ existing_feedback.comment if existing_feedback else '' }}</textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mt-3">Submit Feedback</button>
+                <a href="{{ url_for('student_canteen') }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

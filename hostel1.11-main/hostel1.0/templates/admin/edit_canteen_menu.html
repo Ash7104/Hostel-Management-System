@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Canteen Menu Item</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <div class="form-group">
+                    <label for="meal_type">Meal Type</label>
+                    <select class="form-control" id="meal_type" name="meal_type" required>
+                        <option value="breakfast" {% if menu_item.meal_type == 'breakfast' %}selected{% endif %}>Breakfast</option>
+                        <option value="lunch" {% if menu_item.meal_type == 'lunch' %}selected{% endif %}>Lunch</option>
+                        <option value="dinner" {% if menu_item.meal_type == 'dinner' %}selected{% endif %}>Dinner</option>
+                        <option value="snacks" {% if menu_item.meal_type == 'snacks' %}selected{% endif %}>Snacks</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" value="{% if menu_item.date %}{{ menu_item.date.strftime('%Y-%m-%d') }}{% endif %}" required>                </div>
+                
+                <div class="form-group">
+                    <label for="start_time">Start Time</label>
+                    <input type="time" class="form-control" id="start_time" name="start_time" value="{{ menu_item.start_time.strftime('%H:%M') }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="end_time">End Time</label>
+                    <input type="time" class="form-control" id="end_time" name="end_time" value="{{ menu_item.end_time.strftime('%H:%M') }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="4" required>{{ menu_item.description }}</textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Update Menu Item</button>
+                <a href="{{ url_for('admin_canteen') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

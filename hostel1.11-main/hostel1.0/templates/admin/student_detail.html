@@ -1,0 +1,195 @@
+<!-- templates/admin/student_detail.html -->
+{% extends "layout.html" %}
+
+{% block title %}Student Details{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Student Details</h1>
+        <a href="{{ url_for('admin_students') }}" class="btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Students
+        </a>
+    </div>
+
+    <!-- Student Info Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Student Information</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Name:</strong> {{ student.name }}</p>
+                    <p><strong>Email:</strong> {{ student.email }}</p>
+                    <p><strong>Phone:</strong> {{ student.phone }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Course:</strong> {{ student.course }}</p>
+                    <p><strong>Year:</strong> {{ student.year }}</p>
+                    <p><strong>Room Number:</strong> {% if student.room %}{{ student.room.room_number }}{% else %}Not Assigned{% endif %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fee Summary Card -->
+    <div class="row">
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Fees</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">₹{{ total_fees }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Paid Amount</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">₹{{ paid_fees }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Pending Amount</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">₹{{ pending_fees }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fee Records Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Fee History</h6>
+            <div class="dropdown no-arrow">
+                <a href="#" class="btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addFeeModal">
+                    <i class="fas fa-plus fa-sm text-white-50"></i> Add Fee
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Fee Type</th>
+                            <th>Amount</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fee in fees %}
+                        <tr>
+                            <td>{{ fee.fee_type }}</td>
+                            <td>₹{{ fee.amount }}</td>
+                            <td>
+                                {% if fee.created_at %}
+                                    {{ fee.created_at.strftime('%d-%m-%Y') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if fee.status == 'paid' %}
+                                    <span class="badge bg-success">Paid</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Unpaid</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if fee.status == 'unpaid' %}
+                                    <a href="{{ url_for('admin_mark_fee_paid', fee_id=fee.id) }}" class="btn btn-sm btn-success">
+                                        <i class="fas fa-check"></i> Mark as Paid
+                                    </a>
+                                {% endif %}
+                                <a href="{{ url_for('admin_edit_fee', fee_id=fee.id) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ url_for('admin_delete_fee', fee_id=fee.id) }}" class="btn btn-sm btn-danger" 
+                                   onclick="return confirm('Are you sure you want to delete this fee record?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Fee Modal -->
+<div class="modal fade" id="addFeeModal" tabindex="-1" role="dialog" aria-labelledby="addFeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFeeModalLabel">Add New Fee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ url_for('admin_add_fee', student_id=student.id) }}" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="fee_type">Fee Type</label>
+                        <select class="form-control" id="fee_type" name="fee_type" required>
+                            <option value="Hostel Fee">Hostel Fee</option>
+                            <option value="Mess Fee">Mess Fee</option>
+                            <option value="Late Fee">Late Fee</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" class="form-control" id="amount" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="unpaid">Unpaid</option>
+                            <option value="paid">Paid</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Fee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

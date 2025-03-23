@@ -1,0 +1,137 @@
+<!-- templates/login.html -->
+{% extends "layout.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block auth_content %}
+<style>
+
+
+
+    .card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: url("{{ url_for('static', filename='img/web asset final.png') }}") no-repeat center center/cover;
+        width: 100%;
+        height: 100vh; /* Full height of the viewport */
+        display: flex;
+        justify-content: flex-start; /* Align content to the left */
+        align-items: center;
+        text-align: left;
+        padding-left: 10%; /* Move content towards the left */
+    }
+
+    .container {
+        display: flex;
+        justify-content: flex-start; /* Align items to the left */
+        align-items: center;
+        width: 100%;
+        margin-top: 250px;
+        max-width: 500px; /* Ensure the container doesn’t stretch too wide */
+    }
+
+    .card-body {
+        width: 100%;
+        max-width: 400px; /* Set a reasonable max width */
+        padding: 30px;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea, #06284c);
+        color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        box-sizing: border-box;
+    }
+
+    .formlogin {
+        width: 100%;
+    }
+
+    .formlogin .form-label,
+    .formlogin .form-control,
+    .formlogin button {
+        width: 100%;
+    }
+
+    
+
+    .btn-primary {
+        background-color: rgb(182, 205, 244) !important;
+        border-color: rgb(0, 12, 10) !important;
+        color: rgb(8, 0, 0) !important;
+        
+    }
+
+    .btn-primary:hover {
+    background-color: rgb(33, 40, 243) !important; /* Slightly darker shade for hover effect */
+    color: rgb(249, 246, 246) !important; /* Change text color on hover */
+}
+
+
+
+.mb-3{
+    text-align: left;
+}
+
+
+.formlogin {
+    text-align: left; /* Ensures all inline elements align to the left */
+    width: 100%; /* Makes the form take full width of the parent */
+}
+
+.formlogin form {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: flex-start;
+    
+}
+
+.formlogin .form-label,
+.formlogin .form-control
+ {
+    width: 340px; /* Ensures inputs and button take full available space */
+}
+
+
+</style>
+
+
+
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="container">
+                <div class="card-body">
+                    {% if user_is_logged_in %}  <!-- Check if the user is logged in -->
+                        <div class="mb-3">
+                            <h4 class="text-center">Welcome Back!</h4>
+                            <form method="POST" action="{{ url_for('logout') }}">
+                                <button type="submit" class="btn btn-danger">Logout</button>
+                            </form>
+                            <a href="{{ url_for('index') }}" class="btn btn-secondary mt-2">Go to Home</a> <!-- Home button -->
+                        </div>
+                    {% else %}
+                        <div class="formlogin">
+                            <form method="POST" action="{{ url_for('login') }}">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Login</button>
+                                <a href="{{ url_for('home') }}" class="btn btn-secondary mt-2">Go to Home</a> <!-- Home button -->
+
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

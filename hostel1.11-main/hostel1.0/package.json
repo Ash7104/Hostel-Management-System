@@ -1,0 +1,57 @@
+document.addEventListener("DOMContentLoaded", function () {
+  // Handle hostel selection and update address
+  document.getElementById("hostelName").addEventListener("change", function() {
+      let selectedOption = this.options[this.selectedIndex];
+      let address = selectedOption.getAttribute("data-address") || "";
+      document.getElementById("hostelAddress").value = address;
+  });
+
+  // Handle room form submission
+  document.getElementById("roomForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      let hostelName = document.getElementById("hostelName").value.trim();
+      let roomNumber = document.getElementById("roomNumber").value.trim();
+      let capacity = document.getElementById("capacity").value.trim();
+      let price = document.getElementById("price").value.trim();
+
+      if (hostelName === "" || roomNumber === "" || capacity === "" || price === "") {
+          alert("Please fill in all required fields.");
+          return;
+      }
+
+      document.getElementById("successMessage").classList.remove("d-none");
+
+      setTimeout(() => {
+          document.getElementById("successMessage").classList.add("d-none");
+          document.getElementById("roomForm").reset();
+          document.getElementById("hostelAddress").value = "";
+      }, 2000);
+  });
+
+  // Handle adding new hostel
+  document.getElementById("hostelForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      let newHostelName = document.getElementById("newHostelName").value.trim();
+      let newHostelAddress = document.getElementById("newHostelAddress").value.trim();
+
+      if (newHostelName === "" || newHostelAddress === "") {
+          alert("Please enter both hostel name and address.");
+          return;
+      }
+
+      // Add new hostel to the dropdown
+      let hostelDropdown = document.getElementById("hostelName");
+      let newOption = document.createElement("option");
+      newOption.value = newHostelName;
+      newOption.textContent = newHostelName;
+      newOption.setAttribute("data-address", newHostelAddress);
+      hostelDropdown.appendChild(newOption);
+
+      // Reset and close modal
+      document.getElementById("hostelForm").reset();
+      let addHostelModal = new bootstrap.Modal(document.getElementById("addHostelModal"));
+      addHostelModal.hide();
+  });
+});

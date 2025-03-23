@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Room{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Blocks</title>
+</head>
+<body>
+    <h1>Hostel Blocks</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Block Name</th>
+                <th>Gender</th>
+                <th>Room Count</th>
+                <th>Total Capacity</th>
+                <th>Total Occupied</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for block in blocks %}
+            <tr>
+                <td>{{ block.hostel_block }}</td>
+                <td>{{ block.gender }}</td>
+                <td>{{ block.room_count }}</td>
+                <td>{{ block.total_capacity }}</td>
+                <td>{{ block.total_occupied }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+{% endblock %}

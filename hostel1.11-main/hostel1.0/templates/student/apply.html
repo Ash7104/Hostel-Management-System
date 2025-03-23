@@ -1,0 +1,54 @@
+<!-- templates/student/apply.html -->
+{% extends "layout.html" %}
+
+{% block title %}Apply for Room{% endblock %}
+
+{% block content %}
+
+<style>
+
+.mb-4{
+        margin-left: 15px;
+    }
+</style>
+
+<h2 class="mb-4">Apply for Hostel Room</h2>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Room Application Form</h6>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('student_apply') }}">
+            <div class="mb-3">
+                <label for="preferred_block" class="form-label">Preferred Hostel Block</label>
+                <select class="form-select" id="preferred_block" name="preferred_block" required>
+                    <option value="">Select Block</option>
+                    <option value="A">Block A</option>
+                    <option value="B">Block B</option>
+                    <option value="C">Block C</option>
+                    <option value="D">Block D</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I agree to abide by all hostel rules and regulations.
+                    </label>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <h6 class="alert-heading">Important Information</h6>
+                <p class="mb-0">Your application will be reviewed by the hostel administration. You will be notified once a decision has been made.</p>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane me-2"></i> Submit Application
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

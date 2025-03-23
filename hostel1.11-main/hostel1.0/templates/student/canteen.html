@@ -1,0 +1,162 @@
+{% extends 'layout.html' %}
+
+{% block title %}Canteen Menu{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Canteen Menu</h1>
+    
+    <!-- Today's Menu Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h4 mb-0">Today's Menu ({{ current_day }})</h2>
+        </div>
+        <div class="card-body">
+            {% if todays_menu %}
+                <div class="row">
+                    {% for item in todays_menu %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h3 class="h5 mb-0">{{ item.meal_type }}</h3>
+                                    <small class="text-muted">{{ item.start_time.strftime('%I:%M %p') }} - {{ item.end_time.strftime('%I:%M %p') }}</small>
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ item.description }}</p>
+                                    
+                                    <!-- Show feedback status -->
+                                    {% if item.id in student_feedback %}
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2">Your rating:</span>
+                                            <div class="text-warning">
+                                                {% for i in range(student_feedback[item.id].rating) %}
+                                                    <i class="fas fa-star"></i>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <a href="{{ url_for('student_canteen_feedback', menu_id=item.id) }}" class="btn btn-sm btn-outline-secondary mt-2">Update Feedback</a>
+                                    {% else %}
+                                        <a href="{{ url_for('student_canteen_feedback', menu_id=item.id) }}" class="btn btn-sm btn-primary mt-2">Add Feedback</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No menu items available for today.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Special Menu Items Section -->
+    {% if special_menu_items %}
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h2 class="h4 mb-0">Special Menu Items (Next 7 Days)</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Meal</th>
+                                <th>Time</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in special_menu_items %}
+                                <tr>
+                                    <td>{{ item.date.strftime('%d %b, %Y') }}</td>
+                                    <td>{{ item.meal_type }}</td>
+                                    <td>{{ item.start_time.strftime('%I:%M %p') }} - {{ item.end_time.strftime('%I:%M %p') }}</td>
+                                    <td>{{ item.description }}</td>
+                                    <td>
+                                        {% if item.id in student_feedback %}
+                                            <a href="{{ url_for('student_canteen_feedback', menu_id=item.id) }}" class="btn btn-sm btn-outline-secondary">Update Feedback</a>
+                                        {% else %}
+                                            <a href="{{ url_for('student_canteen_feedback', menu_id=item.id) }}" class="btn btn-sm btn-primary">Add Feedback</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Weekly Menu Section -->
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h2 class="h4 mb-0">Weekly Menu</h2>
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="weeklyMenuTabs" role="tablist">
+                {% for day in weekly_menu.keys() %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {% if day == current_day %}active{% endif %}" 
+                                id="{{ day }}-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#{{ day }}" 
+                                type="button" 
+                                role="tab" 
+                                aria-controls="{{ day }}" 
+                                aria-selected="{% if day == current_day %}true{% else %}false{% endif %}">
+                            {{ day }}
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="tab-content pt-3" id="weeklyMenuTabContent">
+                {% for day, items in weekly_menu.items() %}
+                    <div class="tab-pane fade {% if day == current_day %}show active{% endif %}" 
+                         id="{{ day }}" 
+                         role="tabpanel" 
+                         aria-labelledby="{{ day }}-tab">
+                        
+                        {% if items %}
+                            <div class="row">
+                                {% for item in items %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-header">
+                                                <h3 class="h5 mb-0">{{ item.meal_type }}</h3>
+                                                <small class="text-muted">{{ item.start_time.strftime('%I:%M %p') }} - {{ item.end_time.strftime('%I:%M %p') }}</small>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>{{ item.description }}</p>
+                                                
+                                                <!-- Show feedback options for all items -->
+                                                {% if item.id in student_feedback %}
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2">Your rating:</span>
+                                                        <div class="text-warning">
+                                                            {% for i in range(student_feedback[item.id].rating) %}
+                                                                <i class="fas fa-star"></i>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                    <a href="{{ url_for('student_canteen_feedback', menu_id=item.id) }}" class="btn btn-sm btn-outline-secondary mt-2">Update Feedback</a>
+                                                {% else %}
+                                                    <a href="{{ url_for('student_canteen_feedback', menu_id=item.id) }}" class="btn btn-sm btn-primary mt-2">Add Feedback</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No regular menu items for {{ day }}.</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+<!-- templates/admin/dashboard.html -->
+{% extends "layout.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+
+.card{
+    margin-left: 15px;
+}
+
+h2.mb-4{
+    padding-left: 15px;
+}
+</style>
+
+
+
+
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Pending Applications</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ applications }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-alt fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Total Students</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ students }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-graduate fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Total Rooms</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ rooms }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-door-open fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Pending Fees</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ fees_pending }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('admin_applications') }}" class="btn btn-primary mb-2">View Applications</a>
+                <a href="{{ url_for('add_room') }}" class="btn btn-success mb-2">Add New Room</a>
+                <a href="{{ url_for('admin_attendance') }}" class="btn btn-info mb-2">Mark Attendance</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">System Overview</h6>
+            </div>
+            <div class="card-body">
+                <p>Welcome to the CEC Hostel Management System Admin Dashboard!</p>
+                <p>From here, you can manage student applications, allocate rooms, track fee payments, and monitor student attendance.</p>
+                <p>Use the sidebar to navigate to different sections of the system.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

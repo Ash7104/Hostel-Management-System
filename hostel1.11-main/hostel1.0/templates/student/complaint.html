@@ -1,0 +1,72 @@
+<!-- templates/student/complaint.html -->
+{% extends "layout.html" %}
+
+{% block title %}Submit Complaint{% endblock %}
+
+{% block content %}
+<style>
+
+
+.mb-4{
+    margin-left: 15px;
+}
+
+
+h2.mt-5 {
+    padding-left: 20px; /* Adjust the value as needed */
+}
+
+.card{
+    margin-left: 15px;
+}
+
+</style>
+
+<h2 class="mb-4">Submit a Complaint</h2>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('student_complaint') }}">
+            <div class="mb-3">
+                <label for="complaint" class="form-label">Describe your complaint</label>
+                <textarea class="form-control" id="complaint" name="complaint" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Complaint</button>
+        </form>
+    </div>
+</div>
+
+<h2 class="mt-5">My Complaints</h2>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        {% if complaints %}
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Complaint</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ complaint.text }}</td>
+                        <td>
+                            {% if complaint.status == 'pending' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge bg-success">Resolved</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No complaints submitted.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
